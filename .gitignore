@@ -5,3 +5,6 @@ outputs/*
 .streamlit/secrets.toml
 .pytest_cache/
 pytest-cache-files-*
+*.egg-info/
+build/
+dist/
