@@ -23,12 +23,31 @@ VALIDATED_PARAMS = {"n_estimators": 200, "max_depth": 20, "max_features": 0.5, "
 
 RAW_BASE = "https://raw.githubusercontent.com/Jazzye2/anomaly-detection-toolkit/master/examples/data"
 
-st.set_page_config(page_title="Anomaly Detection Toolkit", layout="wide")
+st.set_page_config(page_title="Anomaly Detection Toolkit", page_icon="🔎", layout="wide")
 st.title("Anomaly Detection Toolkit")
 st.caption(
     "Peer-group anomaly scoring with an explainable classifier on top. "
     "Upload a dataset, tell it what to compare, and get a reviewable list of flags."
 )
+
+with st.expander("How does this work?"):
+    st.markdown(
+        """
+Each row gets compared only to its **peers**, rows that share the same category
+(for example, the same county and the same staffing type). A row is flagged if
+its value is unusually far from what's typical for its specific peer group, not
+just unusual compared to the dataset as a whole.
+
+A model then learns the pattern behind those flags, so it can explain *why* a
+row was flagged (the bar chart you'll see after selecting a row) and let you
+adjust how aggressive the flagging is with a single slider, instead of digging
+through statistics yourself.
+
+The **confidence** number is the model's own estimate of how likely a row is
+to be a genuine anomaly, not a certainty. Treat flagged rows as "worth a
+second look," not as a verdict.
+        """
+    )
 
 with st.expander("New here? Try one of these example datasets first"):
     st.markdown(
@@ -153,11 +172,15 @@ else:
         display = scored.loc[X_test.index, [id_col]].copy()
         display["confidence"] = proba
 
-        st.success(
-            f"Scored {len(scored):,} rows. "
-            f"{too_few_peers_count:,} excluded for too few peers, "
-            f"{missing_group_count:,} excluded for missing peer-group data "
-            f"(blank values in one of the columns used to define the peer group)."
+        scoreable_count = len(scored) - too_few_peers_count - missing_group_count
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Rows scored", f"{len(scored):,}")
+        m2.metric("Successfully evaluated", f"{scoreable_count:,}")
+        m3.metric("Excluded, too few peers", f"{too_few_peers_count:,}")
+        m4.metric("Excluded, missing data", f"{missing_group_count:,}")
+        st.caption(
+            "\"Too few peers\" means the peer group had fewer rows than the minimum size. "
+            "\"Missing data\" means one of the peer-group columns was blank for that row."
         )
 
         threshold = st.slider(
@@ -170,6 +193,12 @@ else:
 
         results = display[display["flagged"]].sort_values("confidence", ascending=False)
         st.subheader("Flagged rows")
+        st.download_button(
+            "Download flagged rows as CSV",
+            data=results.to_csv(index=False).encode("utf-8"),
+            file_name="flagged_rows.csv",
+            mime="text/csv",
+        )
         selected = st.dataframe(
             results,
             use_container_width=True,
@@ -198,3 +227,11 @@ else:
                 "Orange bars pushed the model toward flagging this row; "
                 "blue bars pushed toward normal. Longer bar means bigger impact."
             )
+
+st.divider()
+st.caption(
+    "This is a demonstration of a peer-group anomaly detection methodology, not a "
+    "production fraud-detection system, and it isn't connected to any real Medicare "
+    "or CMS data. "
+    "[Source code & methodology](https://github.com/Jazzye2/anomaly-detection-toolkit)"
+)
