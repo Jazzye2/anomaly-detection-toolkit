@@ -70,10 +70,10 @@ def _score(df, value_col, group_cols, min_cohort):
     return scored
 
 
-@st.cache_resource(show_spinner=False)
-def _train(_labeled, feature_cols, _label_col, retune, random_state=42):
-    X = pd.get_dummies(_labeled[feature_cols])
-    y = _labeled[_label_col].astype(bool)
+@st.cache_data(show_spinner=False)
+def _train(labeled, feature_cols, label_col, retune, random_state=42):
+    X = pd.get_dummies(labeled[feature_cols])
+    y = labeled[label_col].astype(bool)
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, stratify=y, random_state=random_state
     )
