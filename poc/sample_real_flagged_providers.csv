@@ -1,0 +1,21 @@
+Rndrng_NPI,specialty,state,total_em_srvcs,high_level_rate,high_level_rate_cohort_size,high_level_rate_loo_zscore
+1043671969,Plastic and Reconstructive Surgery,NV,70.0,1.0,6,99.0
+1114025855,Psychiatry,ND,206.0,0.0,8,-99.0
+1235429549,Advanced Heart Failure and Transplant Cardiology,OK,143.0,0.7412587412587412,6,-99.0
+1053318766,Hematology-Oncology,VT,1654.0,0.9806529625151148,12,-99.0
+1225136054,Oral Surgery (Dentist only),MI,165.0,1.0,8,99.0
+1225085392,Hematology-Oncology,WY,1048.0,0.9685114503816794,9,-99.0
+1225316193,Micrographic Dermatologic Surgery,MD,400.0,0.45,8,99.0
+1235170572,Otolaryngology,ND,376.0,0.9335106382978724,10,99.0
+1073799573,Clinical Cardiac Electrophysiology,RI,328.0,0.850609756097561,5,-99.0
+1710093174,Geriatric Psychiatry,NH,282.0,0.0,5,-99.0
+1164580973,Micrographic Dermatologic Surgery,IN,1858.0,0.2335844994617868,6,99.0
+1043394240,Advanced Heart Failure and Transplant Cardiology,VA,188.0,0.9148936170212766,15,-99.0
+1043411523,Podiatry,WY,467.0,0.0728051391862955,9,99.0
+1073874210,Advanced Heart Failure and Transplant Cardiology,IA,311.0,0.9356913183279744,7,-99.0
+1164530804,Neuropsychiatry,IL,356.0,0.8567415730337079,11,-99.0
+1710982681,Allergy/ Immunology,NM,49.0,0.6326530612244898,6,-99.0
+1174620512,Interventional Cardiology,ID,655.0,0.7847328244274809,11,-99.0
+1205222437,Osteopathic Manipulative Medicine,NJ,295.0,0.223728813559322,6,99.0
+1114274925,Certified Clinical Nurse Specialist,PA,378.0,0.4074074074074074,5,99.0
+1114319316,Hospice and Palliative Care,SD,797.0,0.7641154328732748,5,-99.0

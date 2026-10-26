@@ -68,6 +68,17 @@ def score_peer_anomalies(df, value_col, group_cols, min_cohort_size=5, extreme_z
 
     z = z.where(~tied, 0.0)
     z = z.where(~deviant, np.sign(x - loo_mean) * extreme_z)
+
+    # extreme_z is a hard cap on every z-score's magnitude, not just the
+    # value used for the exact-zero-variance case above. A tiny cohort
+    # (near min_cohort_size) whose peers cluster at almost, but not
+    # exactly, identical values, common with bounded ratios like a rate
+    # between 0 and 1, can produce a variance that's nonzero but tiny
+    # enough to blow the z-score up toward unbounded values. Found on
+    # real CMS billing-rate data: scores in the tens of millions before
+    # this cap was added. Clipping keeps the scale meaningful everywhere.
+    z = z.clip(lower=-extreme_z, upper=extreme_z)
+
     z = z.where(n >= min_cohort_size, np.nan)
 
     out[f"{value_col}_cohort_size"] = n

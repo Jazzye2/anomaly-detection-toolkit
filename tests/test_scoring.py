@@ -59,6 +59,19 @@ def test_zero_variance_deviant_row_gets_extreme_sentinel():
     assert deviant_row_z == 99.0
 
 
+def test_near_zero_variance_is_capped_not_left_unbounded():
+    """Regression test for a real bug found running this against actual
+    CMS billing-rate data: a tiny cohort whose peers cluster at almost,
+    but not exactly, identical values (common with a bounded ratio like a
+    rate between 0 and 1) can produce a variance that's nonzero but tiny
+    enough to blow the z-score up toward unbounded values, tens of
+    millions, in the real case that surfaced this. extreme_z must cap
+    every z-score's magnitude, not just the exact-zero-variance case."""
+    df = make_df([0.60, 0.60, 0.60, 0.6000001, 0.9])
+    scored = score_peer_anomalies(df, "value", ["group"], min_cohort_size=5, extreme_z=99.0)
+    assert scored["value_loo_zscore"].abs().max() <= 99.0
+
+
 def test_cohorts_below_minimum_size_are_not_scored():
     df = make_df([1, 2, 3])  # only 3 rows, below the default min of 5
     scored = score_peer_anomalies(df, "value", ["group"], min_cohort_size=5)
