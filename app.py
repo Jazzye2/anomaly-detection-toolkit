@@ -21,12 +21,38 @@ from sklearn.model_selection import train_test_split
 # fast default; the "re-tune" option below re-searches for a new dataset.
 VALIDATED_PARAMS = {"n_estimators": 200, "max_depth": 20, "max_features": 0.5, "min_samples_leaf": 1}
 
+RAW_BASE = "https://raw.githubusercontent.com/Jazzye2/anomaly-detection-toolkit/master/examples/data"
+
 st.set_page_config(page_title="Anomaly Detection Toolkit", layout="wide")
 st.title("Anomaly Detection Toolkit")
 st.caption(
     "Peer-group anomaly scoring with an explainable classifier on top. "
     "Upload a dataset, tell it what to compare, and get a reviewable list of flags."
 )
+
+with st.expander("New here? Try one of these example datasets first"):
+    st.markdown(
+        f"""
+**Hospital staffing** — [download CSV]({RAW_BASE}/hospital_staffing.csv)
+
+- Identifier column: `Facility Name`
+- Value to screen for anomalies: `Productive Hours per Adjusted Patient Day`
+- Peer group columns: `County Name`, `Type of Control`, `Hours Type`
+- Extra context columns: those three plus `Year`, `Productive Hours`
+
+**Animal control incidents** — [download CSV]({RAW_BASE}/animal_control_cleaned.csv)
+
+- Identifier column: `FILE NUMBER`
+- Value to screen for anomalies: `RESPONSE_MINUTES`
+- Peer group columns: `SPECIES`, `REQUEST TYPE`, `MUNICIPALITY`
+- Extra context columns: those three plus `SEX`, `AGE`, `DISPOSITION`
+- Already cleaned: the raw dataset only gives dispatch/arrival timestamps,
+  not a ready response-time column, and about half its timestamps turned
+  out to be placeholders rather than real data. This file has that worked
+  out already (response time computed, placeholder timestamps and
+  missing categories removed), so you can go straight to running it.
+        """
+    )
 
 with st.sidebar:
     st.header("1. Data")
