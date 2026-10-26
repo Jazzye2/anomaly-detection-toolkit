@@ -215,6 +215,18 @@ by specialty.
   look, not proof of fraud by itself. OIG has published real audits built
   on exactly this kind of peer-comparison signal.
 
+**This isn't a hypothetical mapping, it's the literal government
+definition.** A 2014 OIG report ([OEI-04-10-00181](https://oig.hhs.gov/oei/reports/oei-04-10-00181.asp))
+defines a "high-coding physician" as one whose average E&M billing level
+sits in the top 1% of their own specialty, billing the two highest-level
+codes 95% or more of the time, peer comparison, the same core idea this
+toolkit implements. CMS acted on exactly this signal: it issued
+"Comparative Billing Reports" to 5,000 physicians nationally who
+consistently billed high-level E&M codes, and ran a specific claims audit
+targeting code 99215, the same code used in the example above. (Those
+sources are from 2012-2014; whether CBRs are still issued in that exact
+form today wasn't confirmed.)
+
 This is illustrative, not a ready-to-run example, there's no real claims
 dataset wired up here. But it's the concrete shape a real application of
 this method would take: same scoring and classification approach, applied
