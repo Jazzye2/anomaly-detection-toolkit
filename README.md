@@ -133,3 +133,52 @@ with confirmed cases (audit outcomes, OIG exclusions, substantiated
 investigations) as soon as any exist. `run_pipeline` accepts any binary
 label column, the pseudo-labeling in step 1-2 is a default to get
 started with, not a requirement.
+
+## What would actually be needed for real Medicare fraud detection
+
+This toolkit is a validated methodology demonstration, not connected to
+any real Medicare or CMS data or systems. Getting from here to something
+genuinely usable for Medicare program integrity work would need, roughly
+in order of how much it would actually move the needle:
+
+1. **Real, confirmed labels.** This is the single biggest gap, bigger
+   than any model or feature change. Everything here trains against this
+   pipeline's own statistical rule, which caps performance at however
+   good that rule is. Real confirmed cases exist publicly: OIG's List of
+   Excluded Individuals and Entities (LEIE), settled False Claims Act
+   cases, past audit outcomes. Training against those instead of
+   pseudo-labels removes the circularity problem entirely rather than
+   just managing it.
+2. **Linked data, not one table in isolation.** Real fraud analytics
+   pulls together claims data (billing codes, amounts, frequency),
+   provider enrollment records, ownership and referral networks, patient
+   utilization, and license history. This toolkit's peer-group approach
+   generalizes to that, the limitation is data access, not the method.
+3. **Network analysis for organized fraud.** A lot of real healthcare
+   fraud isn't one provider acting strangely, it's shared addresses,
+   shared ownership, or referral patterns that don't make clinical
+   sense. That's a graph problem (community detection, centrality),
+   a different tool family from the row-by-row scoring here.
+4. **Change over time, not just difference from peers.** A provider that
+   was normal for years and suddenly shifts is one of the strongest real
+   signals there is. This toolkit compares a row to its peers at a point
+   in time; it doesn't look at trend.
+5. **Human-in-the-loop feedback.** Route flagged cases to an
+   investigator, record what they actually find, and feed that back into
+   retraining. That's active learning, and it solves problem #1
+   gradually in a way that doesn't require having confirmed labels
+   up front.
+6. **Cost-based thresholding.** The threshold sweep here optimizes a
+   generic metric (F1). A real deployment would use an actual dollar
+   cost matrix (investigator-hour cost per false positive, average
+   dollars recovered per confirmed case) and optimize expected net
+   value instead.
+7. **Drift monitoring.** Fraud patterns adapt once people learn what
+   gets flagged. A real system needs ongoing performance monitoring and
+   a retraining trigger, not a model trusted indefinitely after one
+   training run.
+
+SHAP explainability (already built in) and the leave-one-out peer
+scoring (already built in) are two pieces of this list that transfer
+directly. The rest is the real distance between a validated
+methodology and an operational fraud-detection system.
