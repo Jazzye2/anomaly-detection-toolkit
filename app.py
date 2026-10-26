@@ -83,6 +83,21 @@ with st.expander("New here? Try one of these example datasets first"):
   out to be placeholders rather than real data. This file has that worked
   out already (response time computed, placeholder timestamps and
   missing categories removed), so you can go straight to running it.
+
+**Real Medicare billing data** — [download CSV]({RAW_BASE}/cms_em_visit_rates.csv)
+
+- Identifier column: `Rndrng_NPI` (the provider's National Provider Identifier)
+- Value to screen for anomalies: `high_level_rate`
+- Peer group columns: `specialty`, `state`
+- Extra context columns: those two plus `total_em_srvcs`
+- **Public data**, pulled directly from CMS's own open data API
+  (data.cms.gov), no special access required, 307,771 real Medicare
+  providers. `high_level_rate` is the real fraction of each provider's
+  office-visit billing that used the two highest complexity codes
+  (99214/99215), the same metric a 2014 OIG audit used to define a
+  "high-coding physician." See the [Worked example: upcoding](https://github.com/Jazzye2/anomaly-detection-toolkit#worked-example-upcoding)
+  section of the README for the full story, including a real bug this
+  exact dataset surfaced and fixed in the scoring code.
         """
     )
 
