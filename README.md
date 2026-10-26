@@ -1,5 +1,7 @@
 # Anomaly Detection Toolkit
 
+**Live app:** https://anomaly-detection-toolkit.streamlit.app/
+
 A reusable peer-group anomaly detection pipeline: score a numeric column
 against a leave-one-out peer cohort, train a tuned Random Forest on the
 flags, and explain any individual prediction with SHAP.
