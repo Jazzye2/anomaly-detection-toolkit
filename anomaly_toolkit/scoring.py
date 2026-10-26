@@ -35,12 +35,21 @@ def score_peer_anomalies(df, value_col, group_cols, min_cohort_size=5, extreme_z
     Returns
     -------
     DataFrame
-        A copy of df with two new columns:
-          "{value_col}_cohort_size" : int, how many rows share this cohort
-          "{value_col}_loo_zscore"  : float or NaN if below min_cohort_size
+        A copy of df with three new columns:
+          "{value_col}_cohort_size"       : int, how many rows share this cohort
+          "{value_col}_loo_zscore"        : float or NaN if unscorable
+          "{value_col}_missing_peer_group": bool, True if this row has a
+            missing value in one or more group_cols, so it has no defined
+            peer group at all. pandas' groupby silently drops such rows
+            from every group by default, which otherwise looks identical
+            to "cohort too small" in the output, a different and more
+            diagnosable problem worth reporting separately.
     """
     out = df.copy()
     x = out[value_col].astype(float)
+
+    missing_group = out[group_cols].isna().any(axis=1)
+    out[f"{value_col}_missing_peer_group"] = missing_group
 
     group_sum = out.groupby(group_cols)[value_col].transform("sum")
     group_sumsq = out.groupby(group_cols)[value_col].transform(lambda s: (s ** 2).sum())

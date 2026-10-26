@@ -97,7 +97,8 @@ else:
             scored = _score(df, value_col, group_cols, min_cohort)
 
         labeled = scored.dropna(subset=[label_col]).copy()
-        excluded = len(scored) - len(labeled)
+        missing_group_count = int(scored[f"{value_col}_missing_peer_group"].sum())
+        too_few_peers_count = len(scored) - len(labeled) - missing_group_count
 
         with st.spinner("Training model (this can take a minute)..."):
             model, X_train, X_test, y_test, params = _train(
@@ -106,7 +107,8 @@ else:
 
         st.session_state["results_ready"] = True
         st.session_state["scored"] = scored
-        st.session_state["excluded"] = excluded
+        st.session_state["missing_group_count"] = missing_group_count
+        st.session_state["too_few_peers_count"] = too_few_peers_count
         st.session_state["model"] = model
         st.session_state["X_train"] = X_train
         st.session_state["X_test"] = X_test
@@ -114,7 +116,8 @@ else:
 
     if st.session_state.get("results_ready"):
         scored = st.session_state["scored"]
-        excluded = st.session_state["excluded"]
+        missing_group_count = st.session_state["missing_group_count"]
+        too_few_peers_count = st.session_state["too_few_peers_count"]
         model = st.session_state["model"]
         X_train = st.session_state["X_train"]
         X_test = st.session_state["X_test"]
@@ -124,7 +127,12 @@ else:
         display = scored.loc[X_test.index, [id_col]].copy()
         display["confidence"] = proba
 
-        st.success(f"Scored {len(scored):,} rows. {excluded:,} excluded for too few peers.")
+        st.success(
+            f"Scored {len(scored):,} rows. "
+            f"{too_few_peers_count:,} excluded for too few peers, "
+            f"{missing_group_count:,} excluded for missing peer-group data "
+            f"(blank values in one of the columns used to define the peer group)."
+        )
 
         threshold = st.slider(
             "Flagging sensitivity (lower catches more, with more false alarms)",
