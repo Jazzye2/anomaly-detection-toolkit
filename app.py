@@ -77,10 +77,31 @@ with st.sidebar:
     st.header("1. Data")
     uploaded = st.file_uploader("CSV file", type="csv")
 
+    df = None
     if uploaded is not None:
-        df = pd.read_csv(uploaded)
+        try:
+            df = pd.read_csv(uploaded)
+        except Exception:
+            st.error(
+                "Couldn't read that file as a CSV. Double check it's actually a CSV "
+                "(not an Excel file renamed to .csv), and that it isn't empty or corrupted."
+            )
+
+    if df is not None and df.empty:
+        st.error("That file has no rows in it.")
+        df = None
+
+    if df is not None:
         columns = list(df.columns)
         numeric_cols = [c for c in columns if pd.api.types.is_numeric_dtype(df[c])]
+
+        if not numeric_cols:
+            st.error(
+                "This file has no numeric columns, so there's nothing to screen for "
+                "anomalies. This tool needs at least one column of numbers (like a "
+                "rate, a duration, or a count)."
+            )
+            st.stop()
 
         st.header("2. What to compare")
         identifier_col = st.selectbox(
@@ -130,7 +151,7 @@ def _train(labeled, feature_cols, label_col, retune, random_state=42):
     return model, X_train, X_test, y_test, params
 
 
-if uploaded is None:
+if df is None:
     st.info("Upload a CSV to get started.")
     st.session_state.pop("results_ready", None)
 else:
@@ -151,6 +172,7 @@ else:
             )
 
         st.session_state["results_ready"] = True
+        st.session_state["results_file_id"] = uploaded.file_id
         st.session_state["scored"] = scored
         st.session_state["missing_group_count"] = missing_group_count
         st.session_state["too_few_peers_count"] = too_few_peers_count
@@ -159,7 +181,17 @@ else:
         st.session_state["X_test"] = X_test
         st.session_state["identifier_col"] = identifier_col
 
-    if st.session_state.get("results_ready"):
+    results_match_current_file = (
+        st.session_state.get("results_ready")
+        and st.session_state.get("results_file_id") == uploaded.file_id
+    )
+    if st.session_state.get("results_ready") and not results_match_current_file:
+        st.info(
+            "You've uploaded a different file than the one these settings were last "
+            "run against. Click **Run analysis** to see results for this file."
+        )
+
+    if results_match_current_file:
         scored = st.session_state["scored"]
         missing_group_count = st.session_state["missing_group_count"]
         too_few_peers_count = st.session_state["too_few_peers_count"]
