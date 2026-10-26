@@ -182,3 +182,35 @@ SHAP explainability (already built in) and the leave-one-out peer
 scoring (already built in) are two pieces of this list that transfer
 directly. The rest is the real distance between a validated
 methodology and an operational fraud-detection system.
+
+### Worked example: upcoding
+
+Upcoding, billing a higher-complexity procedure or visit code than what was
+actually performed or medically necessary, is one of the most common,
+well-documented real Medicare fraud patterns. A frequent form: billing a
+high-complexity office visit (CPT 99215) when the visit only warranted a
+lower-complexity code (99212-99214). This maps onto the toolkit directly,
+and it mirrors how real CMS/OIG program integrity analytics actually work,
+comparing a provider's billing pattern against same-specialty peers, not
+against providers broadly, since legitimate case complexity varies a lot
+by specialty.
+
+- **Value to screen for anomalies**: percentage of a provider's E&M claims
+  billed at the highest complexity level.
+- **Peer group columns**: specialty, geographic region, facility type. A
+  cardiologist's high-level billing rate should be compared against other
+  cardiologists in the same region, not against family medicine providers,
+  since case complexity legitimately differs by specialty.
+- **Extra context columns**: patient volume, payer mix, years in practice,
+  anything that provides real context for the classifier without leaking
+  the label (see the data-leakage note in `pipeline.py`'s docstring).
+- **What a flag means**: a provider whose high-level billing rate is a
+  genuine outlier against their own specialty and region, worth a closer
+  look, not proof of fraud by itself. OIG has published real audits built
+  on exactly this kind of peer-comparison signal.
+
+This is illustrative, not a ready-to-run example, there's no real claims
+dataset wired up here. But it's the concrete shape a real application of
+this method would take: same scoring and classification approach, applied
+to actual CMS billing data instead of this demonstration's hospital
+staffing and animal control datasets.
