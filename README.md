@@ -4,6 +4,8 @@
 
 **Live app:** https://anomaly-detection-toolkit.streamlit.app/
 
+Want to deploy your own copy on AWS instead? See [DEPLOY_AWS.md](DEPLOY_AWS.md).
+
 A reusable peer-group anomaly detection pipeline: score a numeric column
 against a leave-one-out peer cohort, train a tuned Random Forest on the
 flags, and explain any individual prediction with SHAP.
