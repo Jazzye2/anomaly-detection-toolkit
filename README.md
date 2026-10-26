@@ -6,6 +6,10 @@
 
 Want to deploy your own copy on AWS instead? See [DEPLOY_AWS.md](DEPLOY_AWS.md).
 
+Thinking about scaling this to real, large data? See [poc/](poc/) for an
+Athena-based scoring approach, verified to match the Python logic exactly,
+and the specific real public dataset it's designed for.
+
 A reusable peer-group anomaly detection pipeline: score a numeric column
 against a leave-one-out peer cohort, train a tuned Random Forest on the
 flags, and explain any individual prediction with SHAP.
