@@ -334,7 +334,8 @@ else:
 st.divider()
 st.caption(
     "This is a demonstration of a peer-group anomaly detection methodology, not a "
-    "production fraud-detection system, and it isn't connected to any real Medicare "
-    "or CMS data. "
+    "production fraud-detection system. The Medicare example above uses real, "
+    "public CMS billing data, not live claims data or any protected/restricted "
+    "CMS system. "
     "[Source code & methodology](https://github.com/Jazzye2/anomaly-detection-toolkit)"
 )

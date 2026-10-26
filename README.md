@@ -21,11 +21,13 @@ validated against that dataset; the code itself is not tied to it,
 point it at any tabular dataset with a numeric column worth screening
 and categorical columns that define a sensible peer group.
 
-**What this is not:** a Medicare fraud detector trained on real
-Medicare data. It isn't connected to any Medicare or CMS data source,
-and it shouldn't be pointed at real claims or beneficiary data outside
-CMS's own authorized systems. This is the methodology, portable and
-ready to point at a new dataset, not a finished product.
+**What this is not:** a production-ready Medicare fraud detector. It does
+run against real, public CMS billing data (see the POC results below and
+in `poc/`), but as a demonstration against historical public data, not a
+live connection to claims processing or any protected/restricted CMS
+system, and it shouldn't be pointed at real claims or beneficiary data
+outside CMS's own authorized systems. This is the methodology, validated
+on real data and portable to a new dataset, not a finished product.
 
 ## Why leave-one-out, not a plain z-score
 
