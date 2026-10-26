@@ -3,3 +3,5 @@ __pycache__/
 outputs/*
 !outputs/.gitkeep
 .streamlit/secrets.toml
+.pytest_cache/
+pytest-cache-files-*
