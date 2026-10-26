@@ -166,6 +166,16 @@ with st.sidebar:
         st.header("3. Options")
         min_cohort = st.number_input("Minimum peer group size to score", min_value=2, value=5)
         retune = st.checkbox("Re-tune hyperparameters for this dataset (slower)", value=False)
+        if retune and len(df) > 100_000:
+            st.warning(
+                f"This dataset has {len(df):,} rows. Re-tuning fits 50 separate "
+                "models to search for the best settings, on a dataset this size "
+                "that could take a long time on shared hosting. If you want to "
+                "cancel partway through, use the **Stop** button in the top-right "
+                "corner of the page (not this sidebar), unchecking this box and "
+                "clicking Run analysis again also works and starts a fast run "
+                "immediately."
+            )
 
         run_clicked = st.button("Run analysis", type="primary", disabled=not group_cols)
     else:
