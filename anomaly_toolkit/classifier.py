@@ -20,13 +20,20 @@ DEFAULT_PARAM_GRID = {
 }
 
 
-def tune_random_forest(X, y, param_grid=None, n_iter=20, cv_splits=5, random_state=42):
+def tune_random_forest(X, y, param_grid=None, n_iter=10, cv_splits=5, n_jobs=2, random_state=42):
     """Randomized search for Random Forest hyperparameters, scored on F1.
 
     Searches max_features explicitly rather than leaving it at scikit-learn's
     default ("sqrt"), since that default under-explores the feature space on
     wide, heavily one-hot-encoded data and was the single biggest lever found
     when this was tuned against the hospital staffing dataset.
+
+    n_jobs defaults to 2, not -1 (all cores), on purpose: each parallel
+    worker holds its own copy of the forest and data, so full parallelism
+    multiplies peak memory by the core count. That's fine on a local
+    machine but can crash a memory-capped host (e.g. Streamlit Community
+    Cloud's free tier, ~1GB). Raise n_jobs explicitly if running somewhere
+    with memory to spare.
     """
     param_grid = param_grid or DEFAULT_PARAM_GRID
     skf = StratifiedKFold(n_splits=cv_splits, shuffle=True, random_state=random_state)
@@ -37,7 +44,7 @@ def tune_random_forest(X, y, param_grid=None, n_iter=20, cv_splits=5, random_sta
         scoring="f1",
         cv=skf,
         random_state=random_state,
-        n_jobs=-1,
+        n_jobs=n_jobs,
     )
     search.fit(X, y)
     return search.best_params_, search.best_score_
