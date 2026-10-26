@@ -30,6 +30,19 @@ st.caption(
     "Upload a dataset, tell it what to compare, and get a reviewable list of flags."
 )
 
+st.info(
+    "**Built toward real Medicare fraud detection.** This method, compare a "
+    "provider to its true peers rather than to everyone, directly mirrors how "
+    "real CMS/OIG program integrity analytics work. A concrete example: "
+    "**upcoding**, billing a high-complexity visit code (CPT 99215) when a "
+    "lower one was actually warranted, is a well-documented real fraud pattern. "
+    "Compare each provider's rate of high-complexity billing against same-"
+    "specialty, same-region peers, and a provider billing far outside that norm "
+    "is worth a second look. Same scoring method and same SHAP explainability "
+    "already built here, pointed at the right data. "
+    "[Full roadmap to a production system](https://github.com/Jazzye2/anomaly-detection-toolkit#what-would-actually-be-needed-for-real-medicare-fraud-detection)."
+)
+
 with st.expander("How does this work?"):
     st.markdown(
         """
