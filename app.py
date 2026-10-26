@@ -229,12 +229,30 @@ else:
         )
 
         threshold = st.slider(
-            "Flagging sensitivity (lower catches more, with more false alarms)",
+            "Flagging sensitivity",
             min_value=0.01, max_value=0.99, value=0.30, step=0.01,
+            help=(
+                "How confident the model needs to be before it flags a row. "
+                "Move it left to catch more real cases, at the cost of more false "
+                "alarms. Move it right to see only the cases it's most sure about, "
+                "fewer false alarms, but some real cases might slip through."
+            ),
         )
         display["flagged"] = display["confidence"] > threshold
         flagged_count = int(display["flagged"].sum())
-        st.caption(f"{flagged_count:,} of {len(display):,} test rows flagged at this sensitivity.")
+
+        if threshold < 0.2:
+            tone = "**Aggressive.** Catching more potential cases, expect more false alarms mixed in."
+        elif threshold > 0.5:
+            tone = "**Conservative.** Only the cases the model is most confident about, some real cases may be missed."
+        else:
+            tone = "**Balanced.** A middle ground between catching more and staying precise."
+
+        st.caption(
+            f"**{flagged_count:,} of {len(display):,}** rows flagged at this setting. {tone} "
+            f"There's no universally correct setting, it depends on whether a wasted review "
+            f"or a missed case is the costlier mistake for your situation."
+        )
 
         results = display[display["flagged"]].sort_values("confidence", ascending=False)
         st.subheader("Flagged rows")
