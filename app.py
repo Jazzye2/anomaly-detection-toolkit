@@ -7,6 +7,8 @@ thresholds-as-numbers, no ROC curves.
 
 Launch with: streamlit run app.py
 """
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
@@ -21,7 +23,12 @@ from sklearn.model_selection import train_test_split
 # fast default; the "re-tune" option below re-searches for a new dataset.
 VALIDATED_PARAMS = {"n_estimators": 200, "max_depth": 20, "max_features": 0.5, "min_samples_leaf": 1}
 
-RAW_BASE = "https://raw.githubusercontent.com/Jazzye2/anomaly-detection-toolkit/master/examples/data"
+EXAMPLE_DATA_DIR = Path(__file__).resolve().parent / "examples" / "data"
+
+
+def example_download_button(filename, label):
+    path = EXAMPLE_DATA_DIR / filename
+    st.download_button(label, data=path.read_bytes(), file_name=filename, mime="text/csv", key=filename)
 
 st.set_page_config(page_title="Anomaly Detection Toolkit", page_icon="🔎", layout="wide")
 st.title("Anomaly Detection Toolkit")
@@ -63,17 +70,21 @@ second look," not as a verdict.
     )
 
 with st.expander("New here? Try one of these example datasets first"):
+    st.markdown("**Hospital staffing**")
+    example_download_button("hospital_staffing.csv", "Download hospital_staffing.csv")
     st.markdown(
-        f"""
-**Hospital staffing** — [download CSV]({RAW_BASE}/hospital_staffing.csv)
-
+        """
 - Identifier column: `Facility Name`
 - Value to screen for anomalies: `Productive Hours per Adjusted Patient Day`
 - Peer group columns: `County Name`, `Type of Control`, `Hours Type`
 - Extra context columns: those three plus `Year`, `Productive Hours`
+        """
+    )
 
-**Animal control incidents** — [download CSV]({RAW_BASE}/animal_control_cleaned.csv)
-
+    st.markdown("**Animal control incidents**")
+    example_download_button("animal_control_cleaned.csv", "Download animal_control_cleaned.csv")
+    st.markdown(
+        """
 - Identifier column: `FILE NUMBER`
 - Value to screen for anomalies: `RESPONSE_MINUTES`
 - Peer group columns: `SPECIES`, `REQUEST TYPE`, `MUNICIPALITY`
@@ -83,9 +94,13 @@ with st.expander("New here? Try one of these example datasets first"):
   out to be placeholders rather than real data. This file has that worked
   out already (response time computed, placeholder timestamps and
   missing categories removed), so you can go straight to running it.
+        """
+    )
 
-**Real Medicare billing data** — [download CSV]({RAW_BASE}/cms_em_visit_rates.csv)
-
+    st.markdown("**Real Medicare billing data**")
+    example_download_button("cms_em_visit_rates.csv", "Download cms_em_visit_rates.csv")
+    st.markdown(
+        """
 - Identifier column: `Rndrng_NPI` (the provider's National Provider Identifier)
 - Value to screen for anomalies: `high_level_rate`
 - Peer group columns: `specialty`, `state`
